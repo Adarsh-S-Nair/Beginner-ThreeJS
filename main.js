@@ -22,7 +22,7 @@ renderer.render(scene, camera)
 
 // Create a shape
 const geometry = new THREE.BoxGeometry(5, 5, 5)
-const material = new THREE.MeshStandardMaterial({ color: 0x2CA58D})
+const material = new THREE.MeshStandardMaterial({ color: 0xEFE9F4})
 const box = new THREE.Mesh(geometry, material);
 scene.add(box)
 
@@ -35,9 +35,11 @@ const lightHelper = new THREE.PointLightHelper(pointLight);
 scene.add(lightHelper);
 
 const gridHelper = new THREE.GridHelper(200, 50)
-// scene.add(gridHelper)
+scene.add(gridHelper)
 
 const controls = new OrbitControls(camera, renderer.domElement);
+
+scene.background = new THREE.Color(0xEA7317)
 
 let animate = () => {
   requestAnimationFrame(animate);
