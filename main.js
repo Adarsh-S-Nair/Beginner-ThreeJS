@@ -1,24 +1,73 @@
+// Import statements
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+// Create an object for screen sizes
+const size = {}
+setCanvasSize();
 
-setupCounter(document.querySelector('#counter'))
+// Create a scene
+const scene = new THREE.Scene()
+
+// Create a camera
+const camera = new THREE.PerspectiveCamera(45, size.width / size.height, 0.1, 100)
+
+// Create a renderer
+const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector(".bg") })
+renderer.setPixelRatio(window.devicePixelRatio)
+renderer.setSize(size.width, size.height)
+camera.position.setZ(30)
+renderer.render(scene, camera)
+
+// Create a shape
+const geometry = new THREE.BoxGeometry(5, 5, 5)
+const material = new THREE.MeshStandardMaterial({ color: 0x2CA58D})
+const box = new THREE.Mesh(geometry, material);
+scene.add(box)
+
+// Create a light
+const pointLight = new THREE.PointLight(0xffffff);
+pointLight.position.set(7, 7, 7);
+scene.add(pointLight);
+
+const lightHelper = new THREE.PointLightHelper(pointLight);
+scene.add(lightHelper);
+
+const gridHelper = new THREE.GridHelper(200, 50)
+// scene.add(gridHelper)
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+let animate = () => {
+  requestAnimationFrame(animate);
+
+  box.rotation.x += 0.01
+  box.rotation.z += 0.01
+
+  renderer.render(scene, camera);
+  controls.update();
+}
+
+window.onresize = () => {
+  // Update the canvas size
+  setCanvasSize();
+  // Update the camera
+  camera.aspect = size.width / size.height;
+  camera.updateProjectionMatrix();
+  // Update the renderer
+  renderer.setSize(size.width, size.height)
+}
+
+function setCanvasSize() {
+  size.width = window.innerWidth
+  size.height = window.innerHeight
+}
+
+let main = () => {
+  setCanvasSize()
+  animate();
+}
+
+main()
+
